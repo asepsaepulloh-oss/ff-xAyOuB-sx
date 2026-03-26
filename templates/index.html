@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VPS Manager</title>
+  <style>
+    body{font-family:Tahoma,Arial,sans-serif;background:#0f172a;color:#e2e8f0;margin:0;padding:24px}
+    .wrap{max-width:1000px;margin:auto}
+    .card{background:#1e293b;border-radius:16px;padding:20px;margin-bottom:18px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+    h1,h2{margin-top:0}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+    .stat{background:#334155;padding:16px;border-radius:12px}
+    a{color:#38bdf8;text-decoration:none}
+    button{background:#22c55e;border:none;color:#fff;padding:10px 16px;border-radius:10px;cursor:pointer}
+    code{background:#0b1220;padding:2px 6px;border-radius:6px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>👑 VPS Manager</h1>
+      <p>لوحة بسيطة لإدارة السيرفر وتشغيل بوت تيليجرام للمالك فقط.</p>
+      <p><a href="/terminal">الترمنال</a> | <a href="/files">الملفات</a> | <a href="/processes">العمليات</a></p>
+    </div>
+
+    <div class="card">
+      <h2>📊 حالة النظام</h2>
+      <div class="grid" id="stats"></div>
+      <br>
+      <button onclick="loadStats()">تحديث</button>
+    </div>
+
+    <div class="card">
+      <h2>⚙️ إعدادات Railway المطلوبة</h2>
+      <p>أضف المتغيرات التالية من داخل مشروع Railway:</p>
+      <ul>
+        <li><code>BOT_TOKEN</code></li>
+        <li><code>OWNER_ID</code></li>
+      </ul>
+      <p>بعدها هيشتغل الموقع والبوت تلقائيًا.</p>
+    </div>
+  </div>
+
+  <script>
+    async function loadStats(){
+      const r = await fetch('/api/system_stats');
+      const d = await r.json();
+      document.getElementById('stats').innerHTML = `
+        <div class="stat">💻 CPU: <b>${d.cpu}%</b></div>
+        <div class="stat">🧠 RAM: <b>${d.ram}%</b></div>
+        <div class="stat">💾 مستخدم: <b>${d.ram_used} MB</b></div>
+        <div class="stat">📦 الإجمالي: <b>${d.ram_total} MB</b></div>
+        <div class="stat">🗄️ Disk: <b>${d.disk}%</b></div>
+        <div class="stat">🆓 متاح: <b>${d.disk_free} GB</b></div>
+      `;
+    }
+    loadStats();
+  </script>
+</body>
+</html>

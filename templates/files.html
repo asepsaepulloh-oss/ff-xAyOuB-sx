@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الملفات</title>
+  <style>
+    body{font-family:Tahoma;background:#0f172a;color:#e2e8f0;padding:20px}.row{padding:10px;border-bottom:1px solid #334155}input,button{padding:10px;border-radius:10px;border:none}input{width:60%}button{background:#38bdf8;color:#001}code{background:#1e293b;padding:2px 6px;border-radius:6px}
+  </style>
+</head>
+<body>
+  <h1>📁 الملفات</h1>
+  <p>المسار الحالي: <code id="path">.</code></p>
+  <button onclick="loadFiles('.')">تحديث</button>
+  <div id="list"></div>
+  <script>
+    async function loadFiles(path){
+      const r = await fetch('/api/list_files?path=' + encodeURIComponent(path));
+      const d = await r.json();
+      document.getElementById('path').textContent = d.path || path;
+      if(!d.success){document.getElementById('list').innerHTML = d.error; return;}
+      document.getElementById('list').innerHTML = d.files.map(f => `<div class="row">${f.is_dir ? '📁' : '📄'} ${f.name} ${!f.is_dir ? '(' + f.size + ' bytes)' : ''}</div>`).join('');
+    }
+    loadFiles('.');
+  </script>
+</body>
+</html>

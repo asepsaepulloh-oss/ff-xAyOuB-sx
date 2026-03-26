@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الترمنال</title>
+  <style>
+    body{font-family:Tahoma;background:#020617;color:#e2e8f0;padding:20px}textarea,input{width:100%;border-radius:10px;border:1px solid #334155;background:#0f172a;color:#fff;padding:12px}button{margin-top:10px;background:#22c55e;border:none;padding:10px 16px;color:#fff;border-radius:10px;cursor:pointer}pre{background:#111827;padding:15px;border-radius:12px;white-space:pre-wrap}
+  </style>
+</head>
+<body>
+  <h1>⌨️ الترمنال</h1>
+  <input id="cmd" placeholder="اكتب الأمر هنا">
+  <button onclick="runCmd()">تشغيل</button>
+  <pre id="out">بانتظار التنفيذ...</pre>
+  <script>
+    async function runCmd(){
+      const command = document.getElementById('cmd').value;
+      const res = await fetch('/api/run',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({command})});
+      const data = await res.json();
+      if(!data.success){document.getElementById('out').textContent = data.error;return;}
+      document.getElementById('out').textContent = 'تم بدء التشغيل...';
+      setTimeout(async ()=>{
+        const r = await fetch('/api/output',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pid:data.pid})});
+        const d = await r.json();
+        document.getElementById('out').textContent = d.success ? ((d.output.out||'') + '\n' + (d.output.err||'')) : 'ما زال يعمل أو لا يوجد خرج بعد';
+      },3000)
+    }
+  </script>
+</body>
+</html>
