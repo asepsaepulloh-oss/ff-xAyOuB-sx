@@ -14,6 +14,7 @@ from telegram.ext import Application, CommandHandler, ContextTypes
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 100MB
+IS_VERCEL = bool(os.environ.get("VERCEL"))
 
 # يفضّل ضبط التوكن والمالك من متغيرات البيئة على Railway
 BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
@@ -659,6 +660,6 @@ if __name__ == '__main__':
     start_services()
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
-else:
+elif not IS_VERCEL:
     # لتسهيل العمل على منصات مثل Railway إذا تم استدعاء الملف من مشغّل خارجي
     start_services()
